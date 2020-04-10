@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_trip/dao/home_dao.dart';
+import 'package:flutter_trip/weight/local_nav.dart';
+import 'package:flutter_trip/weight/grid_nav.dart';
+import 'package:flutter_trip/model/home_model/common_model.dart';
+import 'package:flutter_trip/model/home_model/grid_nav_model.dart';
+import 'package:flutter_trip/model/home_model/home_model.dart';
 
-double APPBAR_SCROLL_PFFSET=100;
+double APPBAR_SCROLL_PFFSET = 100;
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,11 +19,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  List imageList = [
-    "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3084018652,54808508&fm=26&gp=0.jpg",
-    "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2826405284,472233312&fm=26&gp=0.jpg",
-  ];
+  List<CommonModel> bannerList = [];
+  List<CommonModel> localNavList = [];
+  GridNavModel gridNav;
   double curoOpacity = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,23 +47,13 @@ class _HomePageState extends State<HomePage> {
                 children: <Widget>[
                   ListView(
                     children: <Widget>[
-                      Container(
-                        height: 160.0,
-                        child: Swiper(
-                          itemCount: imageList.length,
-                          autoplay: true,
-                          itemBuilder: (BuildContext context, int index) {
-//                  return Image(image: new CachedNetworkImageProvider(
-//                  imageList[index]), fit: BoxFit.fill,);
-                            return Image.network(
-                              imageList[index], fit: BoxFit.fill,);
-                          },
-                          pagination: SwiperPagination(),
-                        ),
-                      ),
-                      ListTile(
-                        title: Text("更多", style: TextStyle(height: 800),),
-                      )
+                      _banner,
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                        child: LocalNavWidget(localNavList),),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                          child: GridNavWeight(gridNav))
                     ],
 
                   ),
@@ -72,18 +73,55 @@ class _HomePageState extends State<HomePage> {
   }
 
   /**
-   * List滚动监听
+   * 加载数据
    */
-  _scrollListener(offset) {
-    double alpha=offset/APPBAR_SCROLL_PFFSET;
-    if(alpha<0){
-      alpha=0;
-    }else if(alpha>1){
-      alpha=1;
-    }
+  void loadData() async {
+    HomeModel model = await HomeDao.fetch();
     setState(() {
-      curoOpacity=alpha;
+      bannerList = model.bannerList;
+      localNavList = model.localNavList;
+      gridNav = model.gridNav;
     });
   }
 
+  /**
+   * List滚动监听
+   */
+  _scrollListener(offset) {
+    double alpha = offset / APPBAR_SCROLL_PFFSET;
+    if (alpha < 0) {
+      alpha = 0;
+    } else if (alpha > 1) {
+      alpha = 1;
+    }
+    setState(() {
+      curoOpacity = alpha;
+    });
+  }
+
+  /**
+   * 顶部banner
+   */
+  Widget get _banner {
+    return Container(
+      height: 160,
+      child: Swiper(
+        itemCount: bannerList.length,
+        autoplay: true,
+        pagination: SwiperPagination(),
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            child: Image.network(bannerList[index].icon, fit: BoxFit.fill,),
+            onTap: () {
+              CommonModel data = bannerList[index];
+//              NavigatorUtil.push(context,
+//                  WebView());
+            },
+          );
+        },
+
+      ),
+
+    );
+  }
 }
