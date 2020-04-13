@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_trip/model/home_model/grid_nav_model.dart';
 import 'package:flutter_trip/model/home_model/common_model.dart';
+import 'package:flutter_trip/util/navigator_util.dart';
+import 'package:flutter_trip/weight/webview.dart';
 
 class GridNavWeight extends StatelessWidget {
 
@@ -13,6 +15,8 @@ class GridNavWeight extends StatelessWidget {
     // TODO: implement build
     return PhysicalModel(
       color: Colors.transparent,
+      borderRadius: BorderRadius.all(Radius.circular(6)),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         children: _gridNavItems(context),
       ),
@@ -36,9 +40,9 @@ class GridNavWeight extends StatelessWidget {
 
   _gridNavitem(BuildContext context, GridNavItem item, bool first) {
     List<Widget> items = [];
-    items.add(_mainItem(item.mainItem));
-    items.add(_doubleItem(item.item1, item.item2));
-    items.add(_doubleItem(item.item3, item.item4));
+    items.add(_mainItem(context,item.mainItem));
+    items.add(_doubleItem(context, item.item1, item.item2));
+    items.add(_doubleItem(context, item.item3, item.item4));
 
     List<Widget> expendItems = [];
     items.forEach((item) {
@@ -57,8 +61,8 @@ class GridNavWeight extends StatelessWidget {
   }
 
 
-  _mainItem(CommonModel model) {
-    return Stack(
+  _mainItem(BuildContext context, CommonModel model) {
+    return _wrapGesture(context, Stack(
       alignment: AlignmentDirectional.topCenter,
       children: <Widget>[
         Image.network(model.icon, height: 88, width: 121, fit: BoxFit.contain,
@@ -66,13 +70,14 @@ class GridNavWeight extends StatelessWidget {
         Container(
           margin: EdgeInsets.only(top: 11),
           child: Text(
-            model.title, style: TextStyle(fontSize: 14, color: Colors.white),textAlign: TextAlign.center,),
+            model.title, style: TextStyle(fontSize: 14, color: Colors.white),
+            textAlign: TextAlign.center,),
         )
       ],
-    );
+    ), model);
   }
 
-  _item(CommonModel model, bool first) {
+  _item(BuildContext context, CommonModel model, bool first) {
     BorderSide borderSide = BorderSide(color: Colors.white, width: 0.8);
     return FractionallySizedBox(
       widthFactor: 1,
@@ -83,22 +88,39 @@ class GridNavWeight extends StatelessWidget {
                 bottom: first ? borderSide : BorderSide.none
             ),
           ),
-          child:
-          Center(
-            child: Text(model.title,
-                style: TextStyle(color: Colors.white, fontSize: 14)),
-          )
+          child: _wrapGesture(context,
+              Center(
+                child: Text(model.title,
+                    style: TextStyle(color: Colors.white, fontSize: 14)),
+              ), model)
+
       ),
     );
   }
 
-  _doubleItem(CommonModel modelTop, CommonModel modelBottom) {
+  _doubleItem(BuildContext context, CommonModel modelTop,
+      CommonModel modelBottom) {
     return Column(
       children: <Widget>[
-        Expanded(child: _item(modelTop, true),),
-        Expanded(child: _item(modelTop, false),)
+        Expanded(child: _item(context, modelTop, true),),
+        Expanded(child: _item(context, modelTop, false),)
       ],
     );
   }
 
+  _wrapGesture(BuildContext context, Widget widget, CommonModel model) {
+    return GestureDetector(
+      onTap: () {
+        NavigatorUtil.push(context,
+            WebView(
+              url: model.url,
+              statusBarColor: model.statusBarColor,
+              title: model.title,
+              hideAppBar: model.hideAppBar,
+            )
+        );
+      },
+      child: widget,
+    );
+  }
 }

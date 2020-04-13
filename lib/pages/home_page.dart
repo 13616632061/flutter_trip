@@ -6,6 +6,9 @@ import 'package:flutter_trip/weight/grid_nav.dart';
 import 'package:flutter_trip/model/home_model/common_model.dart';
 import 'package:flutter_trip/model/home_model/grid_nav_model.dart';
 import 'package:flutter_trip/model/home_model/home_model.dart';
+import 'package:flutter_trip/weight/sub_nav.dart';
+import 'package:flutter_trip/model/home_model/salex_box_model.dart';
+import 'package:flutter_trip/weight/sales_box.dart';
 
 double APPBAR_SCROLL_PFFSET = 100;
 
@@ -21,6 +24,8 @@ class _HomePageState extends State<HomePage> {
 
   List<CommonModel> bannerList = [];
   List<CommonModel> localNavList = [];
+  List<CommonModel> subNavList = [];
+  SalesBoxModel salesBoxModel;
   GridNavModel gridNav;
   double curoOpacity = 0;
 
@@ -53,7 +58,13 @@ class _HomePageState extends State<HomePage> {
                         child: LocalNavWidget(localNavList),),
                       Padding(
                           padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
-                          child: GridNavWeight(gridNav))
+                          child: GridNavWeight(gridNav)),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                          child: SubNav(subNavList)),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                          child: SalesBox(salesBoxModel))
                     ],
 
                   ),
@@ -81,6 +92,8 @@ class _HomePageState extends State<HomePage> {
       bannerList = model.bannerList;
       localNavList = model.localNavList;
       gridNav = model.gridNav;
+      subNavList = model.subNavList;
+      salesBoxModel=model.salesBox;
     });
   }
 

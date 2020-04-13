@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_trip/model/home_model/common_model.dart';
+import 'package:flutter_trip/weight/webview.dart';
+import 'package:flutter_trip/util/navigator_util.dart';
 
 class LocalNavWidget extends StatelessWidget {
 
@@ -30,7 +32,7 @@ class LocalNavWidget extends StatelessWidget {
     if (localNavList == null) return null;
     List<Widget> items = [];
     localNavList.forEach((model) {
-      items.add(_item(model));
+      items.add(_item(context,model));
     });
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,7 +43,7 @@ class LocalNavWidget extends StatelessWidget {
   /**
    * item
    */
-  Widget _item(CommonModel model) {
+  Widget _item(BuildContext context,CommonModel model) {
     return GestureDetector(
       child: Column(
         children: <Widget>[
@@ -53,7 +55,7 @@ class LocalNavWidget extends StatelessWidget {
         ],
       ),
       onTap: () {
-
+            NavigatorUtil.push(context,WebView(url: model.url,statusBarColor: model.statusBarColor,title: model.title,hideAppBar: model.hideAppBar,));
       },
     );
   }
