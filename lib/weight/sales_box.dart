@@ -3,6 +3,7 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:flutter_trip/util/navigator_util.dart';
 import 'package:flutter_trip/model/home_model/salex_box_model.dart';
 import 'package:flutter_trip/weight/webview.dart';
+import 'package:flutter_trip/model/home_model/common_model.dart';
 
 
 class SalesBox extends StatelessWidget {
@@ -14,11 +15,25 @@ class SalesBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 // TODO: implement build
-    return _items(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white
+      ),
+      child: _items(context),
+    );
   }
 
   _items(BuildContext context) {
+    if(salesBoxModel==null)return null;
     List<Widget> items = [];
+    items.add(_doubleItems(
+        context, salesBoxModel.bigCard1, salesBoxModel.bigCard2, true, false));
+    items.add(_doubleItems(
+        context, salesBoxModel.smallCard1, salesBoxModel.smallCard2, false,
+        false));
+    items.add(_doubleItems(
+        context, salesBoxModel.smallCard3, salesBoxModel.smallCard3, false,
+        true));
 
     return Container(
       color: Colors.white,
@@ -33,7 +48,25 @@ class SalesBox extends StatelessWidget {
                 )
             ),
             child: _itemTitle(context),
-          )
+          ),
+//          Column(
+//            crossAxisAlignment: CrossAxisAlignment.center,
+//            children: items,
+//          )
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: items.sublist(0,1),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+
+          children: items.sublist(1,2),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+
+          children: items.sublist(2,3),
+        ),
         ],
       ),
     );
@@ -63,6 +96,49 @@ class SalesBox extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+
+  _doubleItems(BuildContext context, CommonModel leftmodel,
+      CommonModel rightmodel, bool big, bool last) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        _item(context, leftmodel, true, last, big),
+        _item(context, rightmodel, false, last, big),
+      ],
+    );
+  }
+
+  _item(BuildContext context, CommonModel model, bool left, bool last,
+      bool big) {
+    BorderSide borderSide = BorderSide(width: 0.8, color: Color(0xfff2f2f2));
+    return GestureDetector(
+      onTap: () {
+        NavigatorUtil.push(context,
+            WebView(
+              url: model.url,
+              title: model.title,
+              statusBarColor: model.statusBarColor,
+              hideAppBar: model.hideAppBar,
+            ));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border(
+                right: left ? borderSide : BorderSide.none,
+                bottom: last ? BorderSide.none : borderSide
+            )
+        ),
+        child: Image.network(
+          model.icon,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width / 2 - 10,
+          height: big ? 120 : 80,
+          fit: BoxFit.fill,),
+      ),
     );
   }
 }

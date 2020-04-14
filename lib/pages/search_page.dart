@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_trip/weight/search_bar.dart';
 
 
 class SearchPage extends StatefulWidget {
@@ -15,9 +16,19 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: Center(
-        child: Text("搜索"),
-      ),
+        body: Container(
+          padding: EdgeInsets.only(top: 20),
+          decoration: BoxDecoration(color: Colors.white),
+          height: 80,
+          child: SearchBar(
+            enabled: true,
+            hideLeft: true,
+            searchBarType: SearchBarType.nomal,
+            hint: "搜索",
+            defaultText: "",
+          ),
+        )
+
     );
   }
 
