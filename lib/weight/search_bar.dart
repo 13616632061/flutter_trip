@@ -37,6 +37,15 @@ class _SearchBarState extends State<SearchBar> {
   TextEditingController _controller = TextEditingController();
 
   @override
+  void initState() {
+    if(widget.defaultText!=null){
+      setState(() {
+        _controller.text=widget.defaultText;
+      });
+    }
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return widget.searchBarType == SearchBarType.nomal
         ? _genNomalSearch() : _genHomeSearch();
@@ -124,9 +133,9 @@ class _SearchBarState extends State<SearchBar> {
    * 输入框
    */
   _inputBox() {
-    Color inputBoxColor = widget.searchBarType == SearchBarType.homeLight
-        ? Color(0xffededed)
-        : Colors.white;
+    Color inputBoxColor = widget.searchBarType == SearchBarType.home
+        ? Colors.white
+        : Color(0xffededed);
     return Container(
       height: 30,
       padding: EdgeInsets.only(left: 10, right: 10),
@@ -185,6 +194,7 @@ class _SearchBarState extends State<SearchBar> {
             setState(() {
               _controller.clear();
             });
+            _onChanged("");
           })
           ,
         ]
@@ -206,10 +216,10 @@ class _SearchBarState extends State<SearchBar> {
       setState(() {
         showClear = false;
       });
-
-      if (widget.onChanged != null) {
-        widget.onChanged(value);
-      }
+    }
+    print(value);
+    if (widget.onChanged != null) {
+      widget.onChanged(value);
     }
   }
 }

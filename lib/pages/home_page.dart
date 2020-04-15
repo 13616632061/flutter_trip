@@ -13,6 +13,8 @@ import 'package:flutter_trip/util/navigator_util.dart';
 import 'package:flutter_trip/weight/webview.dart';
 import 'package:flutter_trip/weight/loading_container.dart';
 import 'package:flutter_trip/weight/search_bar.dart';
+import 'package:flutter_trip/pages/search_page.dart';
+
 
 const APPBAR_SCROLL_PFFSET = 100;
 const SEARCH_BAR_DEFAULT_TEXT = '网红打卡地 景点 酒店 美食';
@@ -34,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   GridNavModel gridNav;
   double curoOpacity = 0;
   bool _loading = true;
+  String searchUrl;
 
   @override
   void initState() {
@@ -99,7 +102,13 @@ class _HomePageState extends State<HomePage> {
               searchBarType: curoOpacity > 0.2
                   ? SearchBarType.homeLight
                   : SearchBarType.home,
-              defaultText:SEARCH_BAR_DEFAULT_TEXT ,
+              defaultText: SEARCH_BAR_DEFAULT_TEXT,
+              inputBoxClick: (){
+                NavigatorUtil.push(context, SearchPage(
+                  searchUrl: searchUrl,
+                  hint: SEARCH_BAR_DEFAULT_TEXT,
+                ));
+              },
             ),
           ),
         ),
@@ -147,6 +156,7 @@ class _HomePageState extends State<HomePage> {
         gridNav = model.gridNav;
         subNavList = model.subNavList;
         salesBoxModel = model.salesBox;
+        searchUrl=model.config.searchUrl;
       });
     } catch (e) {
       print(e);

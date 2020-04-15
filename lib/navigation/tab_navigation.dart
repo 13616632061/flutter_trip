@@ -30,7 +30,7 @@ class _TabNaviagtionState extends State<TabNavigation> {
         controller: _controller,
         children: <Widget>[
           HomePage(),
-          SearchPage(),
+          SearchPage(hideLeft: true,hint: "输入关键字搜索",),
           TravelPage(),
           MyPage()
         ],
